@@ -1,68 +1,19 @@
 import React from 'react';
-import {View, Text, Button, FlatList} from 'react-native';
-import {UDPClient} from './src/networking/udp_client';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from "./src/home_screen";
 
-export default class CSRClient extends React.Component {
-  PORT = 5555;
-  constructor() {
-    super();
-    this.state = {
-      messages: [],
-    };
-  }
+const Stack = createStackNavigator();
 
-  componentDidMount(): void {
-    this.udp_client = new UDPClient(this.PORT);
-    this.udp_client.connect().listen_broadcast();
-    this.messages = [];
-  }
 
-  udpMessageCallback(content) {
-    this.messages.push({
-      message: content,
-      key: this.messages.length + '',
-    });
-    this.setState({
-      messages: this.messages,
-    });
-  }
-
-  start_listening_pressed() {
-    this.udp_client.start_listening(data => {
-      this.udpMessageCallback(data);
-    });
-  }
-
-  stop_listening_pressed() {
-    this.udp_client.stop_listening();
-  }
-
-  render() {
+function App() {
     return (
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          flex: 1,
-          top: 20,
-        }}>
-        <Button
-          title={'Start Listening'}
-          onPress={() => {
-            this.start_listening_pressed();
-          }}
-        />
-        <Button
-          title={'Stop Listening'}
-          onPress={() => {
-            this.stop_listening_pressed();
-          }}
-        />
-        <FlatList
-          data={this.state.messages}
-          renderItem={({item}) => <Text>{item.message}</Text>}
-        />
-      </View>
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="Home" component={HomeScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
-  }
 }
+
+export {App as App};
